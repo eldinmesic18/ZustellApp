@@ -1,0 +1,49 @@
+# Implementation Plan - ZustellApp
+
+The goal is to build a mobile application to assist postal workers with delivery optimization, including OCR scanning, route planning, and map visualization.
+
+## User Review Required
+> [!IMPORTANT]
+> **Technology Stack**: This plan proposes using **Python with KivyMD**. This allows cross-platform development (Android/iOS) using Python. If you prefer a web-based (PWA) or native (Flutter/React Native) approach, please let me know.
+
+> [!NOTE]
+> **OCR Strategy**: We will use Tesseract OCR (via `pytesseract`) for offline capabilities. This requires Tesseract to be installed on the device or bundled. For a prototype, we'll assume a standard Python environment.
+
+## Proposed Changes
+
+### Project Structure
+We will create a modular Python project:
+
+#### [NEW] [main.py](file:///c:/1 Projects/ZustellApp/ZustellApp/main.py)
+- Entry point for the KivyMD application.
+- Sets up the main navigation and screen manager.
+
+#### [NEW] [database.py](file:///c:/1 Projects/ZustellApp/ZustellApp/database.py)
+- Handles SQLite database connection.
+- Tables: `Packages`, `Routes`, `Notes`.
+
+#### [NEW] [ocr_engine.py](file:///c:/1 Projects/ZustellApp/ZustellApp/ocr_engine.py)
+- Functions to process images from the camera.
+- Extracts addresses using Regex and Tesseract.
+
+#### [NEW] [routing.py](file:///c:/1 Projects/ZustellApp/ZustellApp/routing.py)
+- Logic to optimize the delivery order (Solving TSP).
+- Integration with a routing service (e.g., OSRM) for distance matrices.
+
+#### [NEW] [ui/](file:///c:/1 Projects/ZustellApp/ZustellApp/ui/)
+- Directory for `.kv` design files.
+- `home_screen.kv`, `scan_screen.kv`, `map_screen.kv`.
+
+## Verification Plan
+
+### Automated Tests
+- **Unit Tests**:
+    - `test_database.py`: Verify CRUD operations for packages and notes.
+    - `test_routing.py`: Verify the optimization algorithm with a dummy set of coordinates.
+    - `test_ocr.py`: Feed sample images to `ocr_engine` and verify text extraction (requires sample images).
+
+### Manual Verification
+1.  **Run the App**: `python main.py`
+2.  **Navigation**: Switch between Home, Scan, and Map tabs.
+3.  **OCR Mock**: Since we are on Desktop, we will allow uploading an image file to simulate scanning and verify the address is populated.
+4.  **Route Generation**: Add 3-5 dummy addresses and click "Optimize Route". Verify the order changes logically.

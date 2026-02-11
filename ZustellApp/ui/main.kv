@@ -1,0 +1,230 @@
+#:import MapView kivy_garden.mapview.MapView
+#:import MapMarker kivy_garden.mapview.MapMarker
+
+WindowManager:
+    HomeScreen:
+    ScanScreen:
+    MapScreen:
+    DeliveryScreen:
+
+<RightButtons>:
+    orientation: "horizontal"
+    adaptive_width: True
+    spacing: "4dp"
+    MDIconButton:
+        icon: "chevron-up"
+        user_font_size: "18sp"
+        theme_text_color: "Custom"
+        text_color: app.theme_cls.primary_color
+        on_release: app.move_package_up(root.pkg_id)
+    MDIconButton:
+        icon: "chevron-down"
+        user_font_size: "18sp"
+        theme_text_color: "Custom"
+        text_color: app.theme_cls.primary_color
+        on_release: app.move_package_down(root.pkg_id)
+    MDIconButton:
+        icon: "delete"
+        user_font_size: "18sp"
+        theme_text_color: "Custom"
+        text_color: 1, 0.3, 0.3, 1
+        on_release: app.confirm_delete_dialog(root.pkg_id)
+
+<HomeScreen>:
+    name: "home"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: app.theme_cls.bg_normal
+
+        MDTopAppBar:
+            title: "ZustellApp - Braunau"
+            elevation: 4
+            right_action_items: [["navigation-variant", lambda x: app.start_delivery_session()]]
+            md_bg_color: app.theme_cls.primary_dark
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: "12dp"
+            spacing: "12dp"
+
+            MDLabel:
+                text: "Heutige Tour"
+                font_style: "H6"
+                size_hint_y: None
+                height: self.texture_size[1]
+                theme_text_color: "Primary"
+
+            ScrollView:
+                MDList:
+                    id: package_list
+                    spacing: "8dp"
+
+        MDFloatingActionButtonSpeedDial:
+            data: {"Scan": "camera", "Karte": "map", "Optimieren": "routes", "Löschen": "trash-can"}
+            root_button_anim: True
+            callback: app.on_speed_dial_action
+
+<ScanScreen>:
+    name: "scan"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: app.theme_cls.bg_normal
+
+        MDTopAppBar:
+            title: "Scanner"
+            left_action_items: [["arrow-left", lambda x: setattr(app.root, 'current', 'home')]]
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: "16dp"
+            spacing: "16dp"
+
+            MDCard:
+                orientation: "vertical"
+                padding: "8dp"
+                size_hint_y: None
+                height: "300dp"
+                radius: [15,]
+                elevation: 2
+                md_bg_color: 0.15, 0.15, 0.15, 1
+
+                Camera:
+                    id: camera
+                    resolution: (640, 480)
+                    play: True
+
+            MDBoxLayout:
+                size_hint_y: None
+                height: "48dp"
+                spacing: "8dp"
+                
+                MDFillRoundFlatButton:
+                    text: "Paket Scan"
+                    md_bg_color: app.theme_cls.primary_color if app.scan_mode == "package" else [0.3, 0.3, 0.3, 1]
+                    on_release: app.set_scan_mode("package")
+                
+                MDFillRoundFlatButton:
+                    text: "Master-Liste Scan"
+                    md_bg_color: app.theme_cls.primary_color if app.scan_mode == "master" else [0.3, 0.3, 0.3, 1]
+                    on_release: app.set_scan_mode("master")
+
+            MDTextField:
+                id: address_input
+                hint_text: "Erkannte Adresse"
+                mode: "rectangle"
+                multiline: True
+
+            MDRaisedButton:
+                text: "Aufnehmen & Prüfen"
+                pos_hint: {"center_x": 0.5}
+                on_release: app.capture_address()
+
+<MapScreen>:
+    name: "map"
+    MDBoxLayout:
+        orientation: "vertical"
+
+        MDTopAppBar:
+            title: "Routen-Übersicht"
+            left_action_items: [["arrow-left", lambda x: setattr(app.root, 'current', 'home')]]
+
+        MapView:
+            id: mapview
+            lat: 48.258
+            lon: 13.033
+            zoom: 13
+
+<DeliveryScreen>:
+    name: "delivery"
+    MDBoxLayout:
+        orientation: "vertical"
+        md_bg_color: app.theme_cls.bg_normal
+
+        MDTopAppBar:
+            title: "Zustellung Aktiv"
+            left_action_items: [["close", lambda x: app.stop_delivery_session()]]
+
+        MDBoxLayout:
+            orientation: "vertical"
+            padding: "24dp"
+            spacing: "20dp"
+
+            # Aktueller Stopp
+            MDCard:
+                orientation: "vertical"
+                padding: "24dp"
+                spacing: "16dp"
+                radius: [20,]
+                elevation: 4
+                md_bg_color: app.theme_cls.primary_dark
+                size_hint_y: 0.5
+
+                MDLabel:
+                    text: "AKTUELLES ZIEL"
+                    font_style: "Overline"
+                    theme_text_color: "Secondary"
+                    halign: "center"
+
+                MDLabel:
+                    id: current_address
+                    text: "Lade Adresse..."
+                    font_style: "H4"
+                    bold: True
+                    halign: "center"
+
+                MDLabel:
+                    id: current_notes
+                    text: "Notizen: Keine"
+                    halign: "center"
+                    theme_text_color: "Hint"
+
+            # Nächste Stopps
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: "8dp"
+                size_hint_y: 0.3
+
+                MDLabel:
+                    text: "NÄCHSTE STATIONEN"
+                    font_style: "Caption"
+                    theme_text_color: "Hint"
+
+                MDCard:
+                    padding: "16dp"
+                    radius: [15,]
+                    md_bg_color: 0.2, 0.2, 0.2, 1
+                    MDLabel:
+                        id: next_stop_1
+                        text: "Keine weiteren Stopps"
+                        font_style: "Subtitle1"
+
+                MDCard:
+                    padding: "16dp"
+                    radius: [15,]
+                    md_bg_color: 0.2, 0.2, 0.2, 1
+                    MDLabel:
+                        id: next_stop_2
+                        text: "-"
+                        font_style: "Subtitle2"
+                        theme_text_color: "Hint"
+
+            # Aktionen
+            MDBoxLayout:
+                size_hint_y: None
+                height: "80dp"
+                spacing: "16dp"
+                padding: [0, 16, 0, 0]
+
+                MDFillRoundFlatIconButton:
+                    icon: "help-circle"
+                    text: "Hilfe (Maps)"
+                    size_hint_x: 0.4
+                    md_bg_color: 0.3, 0.3, 0.3, 1
+                    on_release: app.start_navigation() # Reuse existing helper
+
+                MDFillRoundFlatIconButton:
+                    icon: "check-all"
+                    text: "ERLEDIGT"
+                    size_hint_x: 0.6
+                    font_style: "H6"
+                    on_release: app.mark_delivered_and_next()

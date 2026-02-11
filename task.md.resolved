@@ -1,0 +1,29 @@
+# Task: ZustellApp Development
+
+## Planning & Setup
+- [ ] Create implementation plan <!-- id: 0 -->
+- [ ] Initialize project structure <!-- id: 1 -->
+- [ ] Set up virtual environment and install dependencies (Kivy/KivyMD, OpenCV, etc.) <!-- id: 2 -->
+
+## Core Features
+- [ ] **OCR & Camera Integration** <!-- id: 3 -->
+    - [ ] Implement camera access <!-- id: 4 -->
+    - [ ] Integrate OCR (Tesseract or similar) to read addresses <!-- id: 5 -->
+- [ ] **Map & Routing** <!-- id: 6 -->
+    - [ ] Integrate Map View (e.g., KivyMapview) <!-- id: 7 -->
+    - [ ] Implement Geocoding (Address to Coordinates) <!-- id: 8 -->
+    - [ ] Implement Route Optimization (TSP Solver) <!-- id: 9 -->
+- [ ] **Delivery Logic** <!-- id: 10 -->
+    - [ ] Create data model for Packages/Letters <!-- id: 11 -->
+    - [ ] Implement stop detection logic <!-- id: 12 -->
+    - [ ] Add "Notes" feature for addresses <!-- id: 13 -->
+
+## UI/UX
+- [ ] Design Main Dashboard <!-- id: 14 -->
+- [ ] develop Scanning Interface <!-- id: 15 -->
+- [ ] Develop Map/Route Interface <!-- id: 16 -->
+
+## Verification
+- [ ] Test OCR accuracy <!-- id: 17 -->
+- [ ] Verify Route Optimization <!-- id: 18 -->
+- [ ] Field Test (Simulation) <!-- id: 19 -->
